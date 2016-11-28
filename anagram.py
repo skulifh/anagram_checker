@@ -8,6 +8,7 @@ hint_length = 18
 potential_words = []
 final_words = []
 md5_final = []
+log_file = open('log_file', 'w')
 
 word_file = 'wordlist'
 counter = 0
@@ -55,6 +56,7 @@ for word in potential_words:
 			
 			if len(combined_word) == hint_length:
 				final_words.append([word, word2])
+				log_file.write(word + ' ' + word2 + '\n')
 			else:
 				potential_phrases.append([word, word2])
 
@@ -91,8 +93,10 @@ while potential_phrases != []:
 				if len(combined_word) == 18:
 					combined_word = ' '.join(copy)
 					final_words.append(copy)
-					print combined_word, ':'
-					print hashlib.md5(combined_word).hexdigest(), '\n'
+					# print combined_word, ':'
+					# print hashlib.md5(combined_word).hexdigest(), '\n'
+					log_file.write(combined_word + '\n')
+					log_file.write(hashlib.md5(combined_word).hexdigest() + '\n\n')
 					# print 'final: ', words
 				else:
 					potential_phrases2.append(copy)
