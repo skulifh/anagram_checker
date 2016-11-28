@@ -30,25 +30,6 @@ def included_check(word):
 
 	return consistent
 
-def bla(phrase):
-	for word in potential_words:
-			combined_word = word
-			for word2 in phrase:
-				combined_word = combined_word + word2
-
-			if (len(combined_word) <= 18) and (included_check(combined_word)):
-				copy = phrase[:]
-				copy.append(word)
-				
-
-				if len(combined_word) == 18:
-					final_words.append(copy)
-					#print 'final: ', words
-				else:
-					potential_phrases2.append(copy)
-					#print 'potential: ', words
-
-
 
 #Find all the words that have characters that fit in the hint phrase
 with open(word_file) as infile:
@@ -94,7 +75,23 @@ counter = 0
 start = time.time()
 while potential_phrases != []:
 	for phrase in potential_phrases[:100]:
-		bla(phrase)
+
+		for word in potential_words:
+			combined_word = word
+			for word2 in phrase:
+				combined_word = combined_word + word2
+
+			if (len(combined_word) <= 18) and (included_check(combined_word)):
+				copy = phrase[:]
+				copy.append(word)
+				
+
+				if len(combined_word) == 18:
+					final_words.append(copy)
+					#print 'final: ', words
+				else:
+					potential_phrases2.append(copy)
+					#print 'potential: ', words
 
 	potential_phrases = potential_phrases2
 	potential_phrases2 = []
