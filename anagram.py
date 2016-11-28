@@ -1,4 +1,5 @@
 import sys
+import pdb
 
 hint = sys.argv[1]
 hint_length = 18
@@ -31,7 +32,7 @@ with open(word_file) as infile:
 	for word in infile:
 		counter += 1
 
-		if included_check(word):
+		if ((len(word) <= hint_length) and (included_check(word))):
 			potential_words.append(word.strip())
 
 
@@ -40,33 +41,62 @@ potential_phrases = []
 
 for word in potential_words:
 	for word2 in potential_words:
-		combined_word = (word + word2)
-		if included_check(combined_word):
-			if len(combined_word) == 18:
+		combined_word = (word + word2).replace('\'', '')
+
+		if len(combined_word) <= hint_length and included_check(combined_word):
+			if len(combined_word) == hint_length:
 				final_words.append([word, word2])
 			else:
 				potential_phrases.append([word, word2])
 
+print 'finished first check'
+#print potential_phrases
+print potential_phrases[4000:5000]
+
 
 # potential_phrases2 = []
 
-# for words in potential_phrases:
+# for phrase in potential_phrases[1000:1010]:
 # 	for word in potential_words:
-# 		combined_word = ''
-# 		for word2 in potential_phrases:
-# 			combined_word += word2
+# 		cop = phrase
+# 		combined_word = word
+# 		for word2 in phrase:
+# 			combined_word = combined_word + word2
+
+# 		cop.append(word)
 
 
-# 		if included_check(combined_word):
+
+
+#-----------
+
+
+
+# for words in potential_phrases[:10]:
+# 	for word in potential_words:
+# 		combined_word = word
+# 		for word2 in words:
+# 			combined_word = combined_word + word2
+# 		print words, word
+# 		print combined_word
+# 		print '\n'
+
+# 		if (len(combined_word) < 18) and (included_check(combined_word)):
+# 			words.append(word)
 # 			if len(combined_word) == 18:
-# 				final_words.append([word, word2])
+# 				final_words.append(words)
+# 				#print 'final: ', words
 # 			else:
-# 				potential_phrases.append([word, word2])
+# 				potential_phrases2.append(words)
+# 				#print 'potential: ', words
 
 
 
 
-print final_words
-print len(final_words)
-print len(potential_phrases)
-print counter
+
+
+
+
+
+
+
