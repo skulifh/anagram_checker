@@ -1,11 +1,13 @@
 import sys
 import time
 import pdb
+import hashlib
 
 hint = sys.argv[1]
 hint_length = 18
 potential_words = []
 final_words = []
+md5_final = []
 
 word_file = 'wordlist'
 counter = 0
@@ -36,7 +38,7 @@ with open(word_file) as infile:
 	for word in infile:
 		counter += 1
 
-		if ((len(word) <= hint_length) and (included_check(word))):
+		if ((len(word.strip()) <= hint_length) and (included_check(word)) and not (word.strip() in potential_words) and not (word.strip() in skip_words)):
 			potential_words.append(word.strip())
 
 print len(potential_words)
@@ -87,14 +89,18 @@ while potential_phrases != []:
 				
 
 				if len(combined_word) == 18:
+					combined_word = ' '.join(copy)
 					final_words.append(copy)
-					#print 'final: ', words
+					print combined_word, ':'
+					print hashlib.md5(combined_word).hexdigest(), '\n'
+					# print 'final: ', words
 				else:
 					potential_phrases2.append(copy)
 					#print 'potential: ', words
 
 	potential_phrases = potential_phrases2
 	potential_phrases2 = []
+
 stop = time.time()
 
 #print potential_phrases2
