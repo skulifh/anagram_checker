@@ -9,6 +9,8 @@ potential_words = []
 final_words = []
 md5_final = []
 log_file = open('log_file', 'w')
+#potential_phrases_file = open('potential_phrases_file', 'w')
+potential_phrases2_file = open('potential_phrases2_file', 'w')
 
 word_file = 'wordlist'
 counter = 0
@@ -58,7 +60,8 @@ for word in potential_words:
 				final_words.append([word, word2])
 				log_file.write(word + ' ' + word2 + '\n')
 			else:
-				potential_phrases.append([word, word2])
+				#potential_phrases.append([word, word2])
+				potential_phrases2_file.write(word + ' ' + word2 + '\n')
 
 print '\nfinished first check\n'
 print len(potential_phrases)
@@ -66,46 +69,54 @@ print final_words
 print '-------------'
 #print potential_phrases
 
-
+#potential_phrases2_file.close()
+#potential_phrases2_file = open('potential_phrases2_file', 'w')
 potential_phrases2 = []
+potential_phrases2_file_second = 'potential_phrases2_file'
 
 # for phrase in potential_phrases:
 # 	for word in potential_words:
 # 		bla = phrase[:]
 # 		bla.append(word)
 # 		print bla
-counter = 0
 
 start = time.time()
-while potential_phrases != []:
-	for phrase in potential_phrases[:100]:
+#while potential_phrases != []:
+with open(potential_phrases2_file_second, 'rw') as inline:
+	for phrase in inline:
+	#for phrase in potential_phrases[:100]:
 
 		for word in potential_words:
-			combined_word = word
-			for word2 in phrase:
-				combined_word = combined_word + word2
+			copy = phrase.replace('\n', '') + ' ' + word.replace('\n', '')
+			combined_word = copy.replace('\'', '').replace(' ', '')
+			# print copy
+			# print combined_word, '\n'
+			# for word2 in phrase:
+			# 	combined_word = combined_word + word2
 
 			if (len(combined_word) <= 18) and (included_check(combined_word)):
-				copy = phrase[:]
-				copy.append(word)
-				
+				#combined_word = ' '.join(copy)
 
 				if len(combined_word) == 18:
-					combined_word = ' '.join(copy)
-					final_words.append(copy)
+					#final_words.append(copy)
 					# print combined_word, ':'
 					# print hashlib.md5(combined_word).hexdigest(), '\n'
-					log_file.write(combined_word + '\n')
-					log_file.write(hashlib.md5(combined_word).hexdigest() + '\n\n')
+					log_file.write(copy + '\n')
+					log_file.write(hashlib.md5(copy).hexdigest() + '\n\n')
 					# print 'final: ', words
 				else:
-					potential_phrases2.append(copy)
+					#potential_phrases2.append(copy)
+					#potential_phrases2_file.write(copy)
+					potential_phrases2_file.write(copy + '\n')
+
 					#print 'potential: ', words
 
-	potential_phrases = potential_phrases2
-	potential_phrases2 = []
+
+	#potential_phrases = potential_phrases2
+	#potential_phrases2 = []
 
 stop = time.time()
+
 
 #print potential_phrases2
 print len(potential_phrases)
