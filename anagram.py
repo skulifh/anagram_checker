@@ -1,34 +1,31 @@
+#Could have done:
+#Removing lines that have been read.
+#Make it multi threaded. Maybe divide the file to the threads
+
 import sys
 import time
 import pdb
 import hashlib
 
 hint = sys.argv[1]
-hint_length = 18
+hint_length = 18 #todo: Automate this
 potential_words = []
-final_words = []
-md5_final = []
 log_file = open('log_file', 'w')
-#potential_phrases_file = open('potential_phrases_file', 'w')
 potential_phrases2_file = open('potential_phrases2_file', 'w')
-
 word_file = 'wordlist'
-counter = 0
 
+#Eliminating useless words. There are words in the wordfile that contain only one character. The uses this list to eliminate those apart from 'i' and 'a' which are legitimate words.
 skip_words = ['b', 'b\'s', 'c', 'c\'s', 'd', 'd\'s', 'e', 'e\'s', 'f', 'f\'s', 'g', 'g\'s', 'h', 'h\'s', 'j', 'j\'s', 'k', 'k\'s', 'l', 'l\'s', 'm', 'm\'s', 'n', 'n\'s', 'o', 'o\'s', 'p', 'p\'s', 'q', 'q\'s', 'r', 'r\'s', 's', 's\'s', 't', 't\'s', 'u', 'u\'s', 'v', 'v\'s', 'x', 'x\'s', 'y', 'y\'s', 'z', 'z\'s']
-#1522726
 
-# def find_next_potential_words(word_list = []):
-# 	for pot_word in potential_words:
-
+#Checks if the given word can match into the given hint phrase
 def included_check(word):
 	consistent = True
 	changed_hint = hint
 
+	#Iterates through the characters in the hint phrase. Once a character mismatch is found it breaks and returns false
 	for character in word.strip():
 		if (character in changed_hint or character == '\''):
 			changed_hint = changed_hint.replace(character, '', 1)
-
 		else:
 			consistent = False
 			break
@@ -40,122 +37,43 @@ def included_check(word):
 with open(word_file) as infile:
 	for word in infile:
 		counter += 1
-
+		
+		#It would also be possible to eliminate words that contain the ' character which would eliminate many words and save a lot of run time. But since I wasn't sure I left them in.
 		if ((len(word.strip()) <= hint_length) and (included_check(word)) and not (word.strip() in potential_words) and not (word.strip() in skip_words)):
 			potential_words.append(word.strip())
 
-print len(potential_words)
-
 
 #Go through the potential words and match them together
-potential_phrases = []
-
 for word in potential_words:
 	for word2 in potential_words:
+		#Removing whitespace and commas from the word to get literal characters
 		combined_word = (word + word2).replace('\'', '')
 
+		#Checking first if the combined word has more character than the hint phrase. 
 		if len(combined_word) <= hint_length and included_check(combined_word):
-			
 			if len(combined_word) == hint_length:
-				final_words.append([word, word2])
 				log_file.write(word + ' ' + word2 + '\n')
 			else:
-				#potential_phrases.append([word, word2])
 				potential_phrases2_file.write(word + ' ' + word2 + '\n')
 
-print '\nfinished first check\n'
-print len(potential_phrases)
-print final_words
-print '-------------'
-#print potential_phrases
 
-#potential_phrases2_file.close()
-#potential_phrases2_file = open('potential_phrases2_file', 'w')
-potential_phrases2 = []
 potential_phrases2_file_second = 'potential_phrases2_file'
 
-# for phrase in potential_phrases:
-# 	for word in potential_words:
-# 		bla = phrase[:]
-# 		bla.append(word)
-# 		print bla
-
-start = time.time()
-#while potential_phrases != []:
+#todo: Combine this one with the previous one
 with open(potential_phrases2_file_second, 'rw') as inline:
 	for phrase in inline:
-	#for phrase in potential_phrases[:100]:
 
 		for word in potential_words:
 			copy = phrase.replace('\n', '') + ' ' + word.replace('\n', '')
 			combined_word = copy.replace('\'', '').replace(' ', '')
-			# print copy
-			# print combined_word, '\n'
-			# for word2 in phrase:
-			# 	combined_word = combined_word + word2
 
 			if (len(combined_word) <= 18) and (included_check(combined_word)):
-				#combined_word = ' '.join(copy)
 
 				if len(combined_word) == 18:
-					#final_words.append(copy)
-					# print combined_word, ':'
-					# print hashlib.md5(combined_word).hexdigest(), '\n'
+					#Possible to add a checker here to kill the program once the correct hash has been found.
 					log_file.write(copy + '\n')
 					log_file.write(hashlib.md5(copy).hexdigest() + '\n\n')
-					# print 'final: ', words
 				else:
-					#potential_phrases2.append(copy)
-					#potential_phrases2_file.write(copy)
 					potential_phrases2_file.write(copy + '\n')
-
-					#print 'potential: ', words
-
-
-	#potential_phrases = potential_phrases2
-	#potential_phrases2 = []
-
-stop = time.time()
-
-
-#print potential_phrases2
-print len(potential_phrases)
-
-print len(final_words)
-
-print stop-start
-#print final_words
-
-
-#-----------
-
-
-
-# for words in potential_phrases[:10]:
-# 	for word in potential_words:
-# 		combined_word = word
-# 		for word2 in words:
-# 			combined_word = combined_word + word2
-# 		print words, word
-# 		print combined_word
-# 		print '\n'
-
-# 		if (len(combined_word) < 18) and (included_check(combined_word)):
-# 			words.append(word)
-# 			if len(combined_word) == 18:
-# 				final_words.append(words)
-# 				#print 'final: ', words
-# 			else:
-# 				potential_phrases2.append(words)
-# 				#print 'potential: ', words
-
-
-
-
-
-
-
-
-
 
 
