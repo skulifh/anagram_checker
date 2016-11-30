@@ -13,6 +13,7 @@ potential_words = []
 log_file = open('log_file', 'w')
 potential_phrases2_file = open('potential_phrases2_file', 'w')
 word_file = 'wordlist'
+kill = False
 
 #Eliminating useless words. There are words in the wordfile that contain only one character. The uses this list to eliminate those apart from 'i' and 'a' which are legitimate words.
 skip_words = ['b', 'b\'s', 'c', 'c\'s', 'd', 'd\'s', 'e', 'e\'s', 'f', 'f\'s', 'g', 'g\'s', 'h', 'h\'s', 'j', 'j\'s', 'k', 'k\'s', 'l', 'l\'s', 'm', 'm\'s', 'n', 'n\'s', 'o', 'o\'s', 'p', 'p\'s', 'q', 'q\'s', 'r', 'r\'s', 's', 's\'s', 't', 't\'s', 'u', 'u\'s', 'v', 'v\'s', 'x', 'x\'s', 'y', 'y\'s', 'z', 'z\'s']
@@ -36,25 +37,11 @@ def included_check(word):
 #Find all the words that have characters that fit in the hint phrase
 with open(word_file) as infile:
 	for word in infile:
-		counter += 1
 		
 		#It would also be possible to eliminate words that contain the ' character which would eliminate many words and save a lot of run time. But since I wasn't sure I left them in.
 		if ((len(word.strip()) <= hint_length) and (included_check(word)) and not (word.strip() in potential_words) and not (word.strip() in skip_words)):
 			potential_words.append(word.strip())
-
-
-#Go through the potential words and match them together
-for word in potential_words:
-	for word2 in potential_words:
-		#Removing whitespace and commas from the word to get literal characters
-		combined_word = (word + word2).replace('\'', '')
-
-		#Checking first if the combined word has more character than the hint phrase. 
-		if len(combined_word) <= hint_length and included_check(combined_word):
-			if len(combined_word) == hint_length:
-				log_file.write(word + ' ' + word2 + '\n')
-			else:
-				potential_phrases2_file.write(word + ' ' + word2 + '\n')
+			potential_phrases2_file.write(word.strip() + '\n')
 
 
 potential_phrases2_file_second = 'potential_phrases2_file'
@@ -73,7 +60,11 @@ with open(potential_phrases2_file_second, 'rw') as inline:
 					#Possible to add a checker here to kill the program once the correct hash has been found.
 					log_file.write(copy + '\n')
 					log_file.write(hashlib.md5(copy).hexdigest() + '\n\n')
+					kill = True
+
 				else:
 					potential_phrases2_file.write(copy + '\n')
+
+		
 
 
