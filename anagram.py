@@ -8,12 +8,13 @@ import pdb
 import hashlib
 
 hint = sys.argv[1]
-hint_length = 18 #todo: Automate this
+hint_length = len(hint.strip().replace(' ', '').replace('\'', '')) #todo: Automate this
 potential_words = []
 log_file = open('log_file', 'w')
 potential_phrases2_file = open('potential_phrases2_file', 'w')
 word_file = 'wordlist'
 kill = False
+target_hash = '4624d200580677270a54ccff86b9610e'
 
 #Eliminating useless words. There are words in the wordfile that contain only one character. The uses this list to eliminate those apart from 'i' and 'a' which are legitimate words.
 skip_words = ['b', 'b\'s', 'c', 'c\'s', 'd', 'd\'s', 'e', 'e\'s', 'f', 'f\'s', 'g', 'g\'s', 'h', 'h\'s', 'j', 'j\'s', 'k', 'k\'s', 'l', 'l\'s', 'm', 'm\'s', 'n', 'n\'s', 'o', 'o\'s', 'p', 'p\'s', 'q', 'q\'s', 'r', 'r\'s', 's', 's\'s', 't', 't\'s', 'u', 'u\'s', 'v', 'v\'s', 'x', 'x\'s', 'y', 'y\'s', 'z', 'z\'s']
@@ -56,15 +57,18 @@ with open(potential_phrases2_file_second, 'rw') as inline:
 
 			if (len(combined_word) <= 18) and (included_check(combined_word)):
 
-				if len(combined_word) == 18:
+				if (len(combined_word) == 18):
 					#Possible to add a checker here to kill the program once the correct hash has been found.
 					log_file.write(copy + '\n')
 					log_file.write(hashlib.md5(copy).hexdigest() + '\n\n')
-					kill = True
+					if (hashlib.md5(copy).hexdigest() == target_hash):
+						kill = True
+						break
 
 				else:
 					potential_phrases2_file.write(copy + '\n')
+		if kill:
+			break
 
-		
 
 
